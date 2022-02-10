@@ -2,16 +2,25 @@
   "name": "png-doctor",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "main": "e.js",
   "dependencies": {
     "fs": "0.0.1-security",
     "jimp": "^0.16.1",
     "png-js": "^1.0.0"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chillbuilds/png-doctor.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chillbuilds/png-doctor/issues"
+  },
+  "homepage": "https://github.com/chillbuilds/png-doctor#readme"
 }
