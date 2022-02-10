@@ -33,11 +33,36 @@ const bufferParse = () => {
         }
         imgMatrix.push(lineArr)
     }
-    pixelCheck()
+    pixelCheck(imgMatrix)
 }
 
-const pixelCheck = () => {
-    
+const pixelCheck = (imgMatrix) => {
+    fs.writeFileSync('./imgMatrix.txt', JSON.stringify(imgMatrix))
+    let maybePile = []
+    for(var i = 1; i < imgDims.height-1; i++) {
+        for(var j = 1; j < imgDims.width-1; j++) {
+            if(imgMatrix[i][j].a != 0){
+                // look to the left right top and bottom for alpha val of 0
+                let clearCount = 0
+                if(imgMatrix[i][j-1].a == 0){
+                    clearCount++
+                }
+                if(imgMatrix[i][j+1].a == 0){
+                    clearCount++
+                }
+                if(imgMatrix[i-1][j].a == 0){
+                    clearCount++
+                }
+                if(imgMatrix[i+1][j].a == 0){
+                    clearCount++
+                }
+                if(clearCount >= 1){
+                    maybePile.push(imgMatrix[i][j])
+                }
+            }
+        }
+    }
+    console.log(maybePile.length)
 }
 
 const checkDims = () => {
