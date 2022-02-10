@@ -2,6 +2,7 @@ const fs = require('fs')
 const jimp = require('jimp')
 const png = require('png-js')
 const imgDir = './test-2.png'
+let date = new Date
 let imgDims;
 let pixelArrBuff;
 let pixelArr = []
@@ -14,7 +15,7 @@ const bufferPull = () => {
         })
     }
     catch(err){
-        fs.appendFileSync('./error-log.txt', err+'\n\n')
+        fs.appendFileSync('./error-log.txt', date.toString()+'\n'+err+'\n\n')
     }
 }
 
@@ -45,7 +46,7 @@ const checkDims = () => {
             imgDims = {width: image.bitmap.width, height: image.bitmap.height}
             bufferPull()
         }).catch(err => {
-            fs.appendFileSync('./error-log.txt', err+'\n\n')
+            fs.appendFileSync('./error-log.txt', date.toString()+'\n'+err+'\n\n')
         })
 }
 
