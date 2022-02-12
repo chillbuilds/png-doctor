@@ -62,7 +62,7 @@ const pixelCheck = (imgMatrix) => {
             }
         }
     }
-    console.log(maybePile.length)
+    convertBuffer(imgMatrix, maybePile)
 }
 
 const checkDims = () => {
@@ -76,3 +76,21 @@ const checkDims = () => {
 }
 
 checkDims()
+
+const convertBuffer = (imgMatrix, maybePile) => {
+    let bufferArr = []
+    for (var i = 0; i < imgDims.height; i++) {
+      for (var j = 0; j < imgDims.width; j++) {
+          bufferArr.push(imgMatrix[i][j].r)
+          bufferArr.push(imgMatrix[i][j].g)
+          bufferArr.push(imgMatrix[i][j].b)
+        //   bufferArr.push(imgMatrix[i][j].a)
+        bufferArr.push(255)
+      }
+    }
+    const buffer = Buffer.from(bufferArr)
+    var image = new jimp({ data: buffer, width: imgDims.width, height: imgDims.height }, function (err, image) {
+    })
+
+    image.write('image.png')
+}
