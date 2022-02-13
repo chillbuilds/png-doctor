@@ -1,5 +1,6 @@
 const canvasDraw = (data) => {
     const parsedData = JSON.parse(data)
+    console.log(parsedData.noPile)
     const stroke = 4
     $('#zeCanvas').attr('style', `background: rgba(0,0,0,0.2);margin-left:${window.innerWidth/2-parsedData.width/2}px`)
     var canvas = document.getElementById("zeCanvas")
@@ -9,6 +10,10 @@ const canvasDraw = (data) => {
     ctx.fillStyle = "#ff0000"
     for(var n = 0; n < parsedData.maybePile.length; n++) {
         ctx.fillRect(parsedData.maybePile[n].x, parsedData.maybePile[n].y, stroke, stroke)
+    }
+    ctx.fillStyle = "#000000"
+    for(var i = 0; i < parsedData.noPile.length; i++) {
+        ctx.fillRect(parsedData.noPile[i].x, parsedData.noPile[i].y, stroke, stroke)
     }
     console.log(parsedData.maybePile.length)
 }

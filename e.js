@@ -8,13 +8,14 @@ const port = 8080
 const fs = require('fs')
 const jimp = require('jimp')
 const png = require('png-js')
-const imgDir = './test-images/pizza.png'
+const imgDir = './test-images/paula.png'
 let date = new Date
 let imgDims;
 let pixelArrBuff;
 let pixelArr = []
 
 const bufferPull = () => {
+    // store png rgba pixel value in global buffer
     try{
         png.decode(imgDir, function(pixels) {
             pixelArrBuff = Buffer.from(pixels)
@@ -29,6 +30,7 @@ const bufferPull = () => {
 
 const bufferParse = () => {
     let pixel = 0
+    // build pixel object from parsed pixel buffer
     for(var i = 0; i < pixelArrBuff.length; i=i+4) {
         pixel++
         x = Math.floor(pixel % imgDims.width)
@@ -36,6 +38,7 @@ const bufferParse = () => {
         pixelArr.push({pixel: pixel, x: x, y: y, r: pixelArrBuff[i], g: pixelArrBuff[i+1], b: pixelArrBuff[i+2], a: pixelArrBuff[i+3]})
     }
     let imgMatrix = []
+    // builds array of pixel objects for 2d mapping
     for(var i = 0; i < pixelArr.length; i=i+imgDims.width) {
         let lineArr = []
         for(var j = 0; j < imgDims.width; j++) {
@@ -65,6 +68,7 @@ const pixelCheck = (imgMatrix) => {
 }
 
 const checkDims = () => {
+    // store image dimensions in global object
     jimp.read(imgDir)
         .then(image => {
             imgDims = {width: image.bitmap.width, height: image.bitmap.height}
@@ -77,6 +81,7 @@ const checkDims = () => {
 
 const convertBuffer = (imgMatrix, maybePile) => {
     let bufferArr = []
+    // converts pixel data to buffer arrto save image
     for (var y = 0; y < imgDims.height; y++) {
       for (var x = 0; x < imgDims.width; x++) {
           bufferArr.push(imgMatrix[y][x].r)
@@ -92,37 +97,41 @@ const convertBuffer = (imgMatrix, maybePile) => {
 
     image.write('./public/assets/images/image.png')
     checkMaybes(maybePile, 40)
-    // serverSetup(maybePile)
 }
 
 const checkMaybes = (maybePile, res) => {
-    console.log(maybePile)
+    console.log(maybePile.length)
+    var noPile = []
     var newMaybePile = []
-    for(var i of maybePile) {
-        if(i.x > res/2 || i.x < imgDims.width-res/2 ||
-           i.y > res/2 || i.y < imgDims.height-res/2){
-            newMaybePile.push(i)
-        }
+    // separates outer edge maybes from inner maybes for exclusion box scan
+    for(var i = 0; i < maybePile.length; i++) {
+        if(maybePile[i].x < res/2 || maybePile[i].x > imgDims.width-res/2 || maybePile[i].y < res/2 || maybePile[i].y > imgDims.height-res/2){
+            noPile.push(maybePile[i])
+        }else{newMaybePile.push(maybePile[i])}
     }
-    
-    console.log('maybePile length: ' + maybePile.length)
     console.log('new maybePile length: ' + newMaybePile.length)
+    console.log('noPile length: ' + noPile.length)
+    serverSetup(newMaybePile, noPile)
 }
 
-checkDims()
+const exclusionScan = () => {
 
-const serverSetup = (maybePile) => {
+}
+
+const serverSetup = (maybePile, noPile) => {
     app.use(express.static(path.join(__dirname, 'public')))
 
     app.get('/image-gen', (req, res) => {
         res.sendFile(path.join(__dirname, '/public/index.html'))
     })
-
+    // sends image data to front end on button press
     app.post('/test', function (req, res) {
-        res.json(JSON.stringify({width: imgDims.width, height: imgDims.height, maybePile: maybePile}))
+        res.json(JSON.stringify({width: imgDims.width, height: imgDims.height, maybePile: maybePile, noPile: noPile}))
     })
 
     app.listen(port, () => {
         console.log(`http://localhost:${port}/image-gen`)
     })
 }
+
+checkDims()

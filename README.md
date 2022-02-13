@@ -19,4 +19,4 @@ detects edges and sends data to front end for visualization
 
 To Do
 
-* set x and y in maybePile object instead of front end calculation
+* figure out how to prune artifacts from outer image edges
