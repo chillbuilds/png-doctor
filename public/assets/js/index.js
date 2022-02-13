@@ -6,16 +6,7 @@ const canvasDraw = (data) => {
     ctx.canvas.width = parsedData.width
     ctx.canvas.height = parsedData.height
     ctx.fillStyle = "#ff0000"
-    var pixel = 0
-    for (var y = 0; y < parsedData.height-1; y++) {
-        pixel++
-        for (var x = 0; x < parsedData.width-1; x++) {
-            pixel++
-            for(var n = 0; n < parsedData.maybePile.length; n++) {
-                if(parsedData.maybePile[n].pixel == pixel){
-                    ctx.fillRect(x, y, 6, 6)
-                }
-            }
-        }
+    for(var n = 0; n < parsedData.maybePile.length; n++) {
+        ctx.fillRect(parsedData.maybePile[n].x, parsedData.maybePile[n].y, 1, 1)
     }
 }

@@ -31,7 +31,9 @@ const bufferParse = () => {
     let pixel = 0
     for(var i = 0; i < pixelArrBuff.length; i=i+4) {
         pixel++
-        pixelArr.push({pixel: pixel, r: pixelArrBuff[i], g: pixelArrBuff[i+1], b: pixelArrBuff[i+2], a: pixelArrBuff[i+3]})
+        x = Math.floor(pixel % imgDims.width)
+        y = Math.floor(pixel / imgDims.width)
+        pixelArr.push({pixel: pixel, x: x, y: y, r: pixelArrBuff[i], g: pixelArrBuff[i+1], b: pixelArrBuff[i+2], a: pixelArrBuff[i+3]})
     }
     let imgMatrix = []
     for(var i = 0; i < pixelArr.length; i=i+imgDims.width) {
@@ -45,7 +47,6 @@ const bufferParse = () => {
 }
 
 const pixelCheck = (imgMatrix) => {
-    fs.writeFileSync('./imgMatrix.txt', JSON.stringify(imgMatrix))
     let maybePile = []
     for(var i = 1; i < imgDims.height-1; i++) {
         for(var j = 1; j < imgDims.width-1; j++) {

@@ -7,6 +7,3 @@ Error: ENOENT: no such file or directory, open './test-images/search.png'
 Sat Feb 12 2022 22:34:13 GMT-0700 (Mountain Standard Time)
 Error: ENOENT: no such file or directory, open './test-images/search.png'
 
-Sat Feb 12 2022 22:34:24 GMT-0700 (Mountain Standard Time)
-Error: ENOENT: no such file or directory, open './test-images/search.png'
-
