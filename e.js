@@ -8,7 +8,7 @@ const port = 8080
 const fs = require('fs')
 const jimp = require('jimp')
 const png = require('png-js')
-const imgDir = './test-images/search.png'
+const imgDir = './test-images/pizza.png'
 let date = new Date
 let imgDims;
 let pixelArrBuff;
@@ -56,8 +56,7 @@ const pixelCheck = (imgMatrix) => {
                    imgMatrix[i][j+1].a == 0 ||
                    imgMatrix[i-1][j].a == 0 ||
                    imgMatrix[i+1][j].a == 0
-                   ){
-                    maybePile.push(imgMatrix[i][j])
+                   ){maybePile.push(imgMatrix[i][j])
                 }
             }
         }
@@ -92,7 +91,22 @@ const convertBuffer = (imgMatrix, maybePile) => {
     })
 
     image.write('./public/assets/images/image.png')
-    serverSetup(maybePile)
+    checkMaybes(maybePile, 40)
+    // serverSetup(maybePile)
+}
+
+const checkMaybes = (maybePile, res) => {
+    console.log(maybePile)
+    var newMaybePile = []
+    for(var i of maybePile) {
+        if(i.x > res/2 || i.x < imgDims.width-res/2 ||
+           i.y > res/2 || i.y < imgDims.height-res/2){
+            newMaybePile.push(i)
+        }
+    }
+    
+    console.log('maybePile length: ' + maybePile.length)
+    console.log('new maybePile length: ' + newMaybePile.length)
 }
 
 checkDims()
