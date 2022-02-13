@@ -8,7 +8,7 @@ const port = 8080
 const fs = require('fs')
 const jimp = require('jimp')
 const png = require('png-js')
-const imgDir = './test-images/pizza.png'
+const imgDir = './test-images/search.png'
 let date = new Date
 let imgDims;
 let pixelArrBuff;
