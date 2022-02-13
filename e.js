@@ -8,7 +8,7 @@ const port = 8080
 const fs = require('fs')
 const jimp = require('jimp')
 const png = require('png-js')
-const imgDir = './test-2.png'
+const imgDir = './test-images/pizza.png'
 let date = new Date
 let imgDims;
 let pixelArrBuff;
@@ -23,6 +23,7 @@ const bufferPull = () => {
     }
     catch(err){
         fs.appendFileSync('./error-log.txt', date.toString()+'\n'+err+'\n\n')
+        console.log(err)
     }
 }
 
@@ -70,6 +71,7 @@ const checkDims = () => {
             bufferPull()
         }).catch(err => {
             fs.appendFileSync('./error-log.txt', date.toString()+'\n'+err+'\n\n')
+            console.log(err)
         })
 }
 

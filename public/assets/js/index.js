@@ -13,7 +13,7 @@ const canvasDraw = (data) => {
             pixel++
             for(var n = 0; n < parsedData.maybePile.length; n++) {
                 if(parsedData.maybePile[n].pixel == pixel){
-                    ctx.fillRect(x, y, 5, 5)
+                    ctx.fillRect(x, y, 3, 3)
                 }
             }
         }
