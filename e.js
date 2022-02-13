@@ -1,3 +1,10 @@
+// server stuff
+const express = require('express')
+const path = require('path')
+const app = express()
+const port = 8080
+
+// image manipulation stuff
 const fs = require('fs')
 const jimp = require('jimp')
 const png = require('png-js')
@@ -75,16 +82,14 @@ const checkDims = () => {
         })
 }
 
-checkDims()
-
 const convertBuffer = (imgMatrix, maybePile) => {
     let bufferArr = []
-    for (var i = 0; i < imgDims.height; i++) {
-      for (var j = 0; j < imgDims.width; j++) {
-          bufferArr.push(imgMatrix[i][j].r)
-          bufferArr.push(imgMatrix[i][j].g)
-          bufferArr.push(imgMatrix[i][j].b)
-        //   bufferArr.push(imgMatrix[i][j].a)
+    for (var y = 0; y < imgDims.height; y++) {
+      for (var x = 0; x < imgDims.width; x++) {
+          bufferArr.push(imgMatrix[y][x].r)
+          bufferArr.push(imgMatrix[y][x].g)
+          bufferArr.push(imgMatrix[y][x].b)
+        //   bufferArr.push(imgMatrix[y][x].a)
         bufferArr.push(255)
       }
     }
@@ -92,5 +97,24 @@ const convertBuffer = (imgMatrix, maybePile) => {
     var image = new jimp({ data: buffer, width: imgDims.width, height: imgDims.height }, function (err, image) {
     })
 
-    image.write('image.png')
+    image.write('./public/assets/images/image.png')
+    serverSetup(maybePile)
+}
+
+checkDims()
+
+const serverSetup = (maybePile) => {
+    app.use(express.static(path.join(__dirname, 'public')))
+
+    app.get('/image-gen', (req, res) => {
+        res.sendFile(path.join(__dirname, '/public/index.html'))
+    })
+
+    app.post('/test', function (req, res) {
+        res.json(JSON.stringify({width: imgDims.width, height: imgDims.height, maybePile: maybePile}))
+    })
+
+    app.listen(port, () => {
+        console.log(`http://localhost:${port}/image-gen`)
+    })
 }

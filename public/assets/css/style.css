@@ -1,0 +1,26 @@
+body {
+    user-select: none;
+    font-family: 'Courier New', Courier, monospace;
+    background: #2C8C99;
+}
+.genBtn {
+    background: #326771;
+    text-align: center;
+    width: 6%;
+    margin: 3%;
+    margin-left: 47%;
+    padding: 5px 20px;
+    border-radius: 6px;
+    border-bottom: 4px solid rgba(0, 0, 0, 0.2);
+}
+.genBtn:target {
+    position: relative;
+    top: 4px;
+    border: none;
+    padding-bottom: 4px;
+}
+.imgContainer {
+    width: 60%;
+    margin-left: 20%;
+    border-radius: 6px;
+}

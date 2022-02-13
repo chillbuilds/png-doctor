@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/chillbuilds/png-doctor#readme",
   "dependencies": {
+    "express": "^4.17.2",
     "fs": "0.0.1-security",
     "jimp": "^0.16.1",
+    "path": "^0.12.7",
     "png-js": "^1.0.0"
   }
 }
