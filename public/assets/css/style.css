@@ -24,3 +24,37 @@ body {
     margin-left: 20%;
     border-radius: 6px;
 }
+#zeCanvas {
+    border-radius: 6px;
+}
+.legend {
+    position: absolute;
+    margin: 20px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+}
+.lrg {
+    margin-left: 9px;
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.2);
+}
+.med {
+    margin-left: 14px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.2);
+}
+.sm {
+    margin-left: 19px;
+    width: 30px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.2);
+}
+.xs {
+    margin-left: 24px;
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.2);
+}
