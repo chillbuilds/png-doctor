@@ -8,7 +8,7 @@ const port = 8080
 const fs = require('fs')
 const jimp = require('jimp')
 const png = require('png-js')
-const imgDir = './test-images/paula.png'
+const imgDir = './test-images/test-2.png'
 let date = new Date
 let imgDims;
 let pixelArrBuff;
@@ -87,8 +87,8 @@ const convertBuffer = (imgMatrix, maybePile) => {
           bufferArr.push(imgMatrix[y][x].r)
           bufferArr.push(imgMatrix[y][x].g)
           bufferArr.push(imgMatrix[y][x].b)
-        //   bufferArr.push(imgMatrix[y][x].a)
-        bufferArr.push(255)
+          bufferArr.push(imgMatrix[y][x].a)
+        // bufferArr.push(255)
       }
     }
     const buffer = Buffer.from(bufferArr)
@@ -96,11 +96,14 @@ const convertBuffer = (imgMatrix, maybePile) => {
     })
 
     image.write('./public/assets/images/image.png')
-    checkMaybes(maybePile, 40)
+    // console.log('image saved')
+    if(maybePile != false){
+        checkMaybes(maybePile, 50, imgMatrix)
+        checkMaybes(maybePile, 30, imgMatrix)
+    }
 }
 
-const checkMaybes = (maybePile, res) => {
-    console.log(maybePile.length)
+const checkMaybes = (maybePile, res, imgMatrix) => {
     var noPile = []
     var newMaybePile = []
     // separates outer edge maybes from inner maybes for exclusion box scan
@@ -109,13 +112,83 @@ const checkMaybes = (maybePile, res) => {
             noPile.push(maybePile[i])
         }else{newMaybePile.push(maybePile[i])}
     }
-    console.log('new maybePile length: ' + newMaybePile.length)
-    console.log('noPile length: ' + noPile.length)
-    serverSetup(newMaybePile, noPile)
+    exclusionScan(newMaybePile, noPile, res, imgMatrix)
+    // serverSetup(newMaybePile, noPile)
 }
 
-const exclusionScan = () => {
+const exclusionScan = (maybePile, noPile, res, imgMatrix) => {
+    const pixelCount = imgDims.width*imgDims.height
+    // build array of res x res pixels to check
+    for(var i = 0; i < maybePile.length; i++) {
+        // console.log(imgMatrix[maybePile[i].y][maybePile[i].x-1])
+        var exclusionArr = []
+        for(var j = 1; j < res/2+1; j++) {
+            for(var n = 1; n < res/2+1; n++) {
+                let coordYPlus = {x: (imgMatrix[maybePile[i].y][maybePile[i].x-1].x)+n, y: (imgMatrix[maybePile[i].y][maybePile[i].x-1].y)+j}
+                let coordYMinus = {x: (imgMatrix[maybePile[i].y][maybePile[i].x-1].x)-n, y: (imgMatrix[maybePile[i].y][maybePile[i].x-1].y)-j}
+                let coordXPlus = {x: (imgMatrix[maybePile[i].y][maybePile[i].x-1].x)+j, y: (imgMatrix[maybePile[i].y][maybePile[i].x-1].y)+n}
+                let coordXMinus = {x: (imgMatrix[maybePile[i].y][maybePile[i].x-1].x)-j, y: (imgMatrix[maybePile[i].y][maybePile[i].x-1].y)-n}
+                exclusionArr.push(coordYPlus)
+                exclusionArr.push(coordYMinus)
+                exclusionArr.push(coordXPlus)
+                exclusionArr.push(coordXMinus)
+            }
+        }
+        exclusionArr.push({x: maybePile[i].x, y: maybePile[i].y})
+        exclusionArr.push({x: maybePile[i].x+1, y: maybePile[i].y})
+        exclusionArr.push({x: maybePile[i].x-1, y: maybePile[i].y})
+        exclusionArr.push({x: maybePile[i].x, y: maybePile[i].y+1})
+        exclusionArr.push({x: maybePile[i].x, y: maybePile[i].y-1})
+        perimeterScan(exclusionArr, imgMatrix)
+        // break
+    }
+}
 
+const perimeterScan = (exclusionArr, imgMatrix) => {
+    let xMax = exclusionArr[0].x
+    let xMin = exclusionArr[0].x
+    let yMax = exclusionArr[0].y
+    let yMin = exclusionArr[0].y
+    for(var i of exclusionArr) {
+        if(i.x > xMax){xMax = i.x}
+        if(i.x < xMin){xMin = i.x}
+        if(i.y > yMax){yMax = i.y}
+        if(i.y < yMin){yMin = i.y}
+    }
+    let clearPerimeter = true
+    for(var x = 0; x < xMax-xMin+1; x++) {
+        // console.log(imgMatrix[yMin+x][xMin-1]) //positive y x min
+        // console.log(imgMatrix[yMin][xMin+x-1]) //positive x y min
+        // console.log(imgMatrix[yMin+x][xMax-1]) // positive y x max
+        // console.log(imgMatrix[yMax][xMin+x-1]) // positive x y max
+        if(imgMatrix[yMin+x][xMin-1].a != 0){
+            clearPerimeter = false
+        }
+        if(imgMatrix[yMin][xMin+x-1].a != 0){
+            clearPerimeter = false
+        }
+        if(imgMatrix[yMin+x][xMax-1].a != 0){
+            clearPerimeter = false
+        }
+        if(imgMatrix[yMax][xMin+x-1].a != 0){
+            clearPerimeter = false
+        }
+    }
+    if(clearPerimeter == true){
+        // console.log(exclusionArr)
+        failClear(exclusionArr, imgMatrix)
+    }
+}
+
+const failClear = (exclusionArr, imgMatrix) => {
+    for(var i of exclusionArr) {
+        // imgMatrix[i.y][i.x].r = 0
+        // imgMatrix[i.y][i.x].g = 0
+        // imgMatrix[i.y][i.x].b = 0
+        imgMatrix[i.y][i.x].a = 0
+        // console.log(imgMatrix[i.y][i.x].a)
+    }
+    convertBuffer(imgMatrix, false)
 }
 
 const serverSetup = (maybePile, noPile) => {
@@ -128,7 +201,6 @@ const serverSetup = (maybePile, noPile) => {
     app.post('/test', function (req, res) {
         res.json(JSON.stringify({width: imgDims.width, height: imgDims.height, maybePile: maybePile, noPile: noPile}))
     })
-
     app.listen(port, () => {
         console.log(`http://localhost:${port}/image-gen`)
     })
